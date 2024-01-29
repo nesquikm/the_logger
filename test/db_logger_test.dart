@@ -25,7 +25,8 @@ void main() {
 
   group('TheLogger can be instantiated', () {
     test('can be instantiated', () {
-      expect(TheLogger.i(), isNotNull);
+      final logger = TheLogger.i()..init();
+      expect(logger, isNotNull);
     });
   });
 

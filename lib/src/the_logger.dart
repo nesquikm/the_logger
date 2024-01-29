@@ -115,6 +115,8 @@ class TheLogger {
 
   /// Dispose logger
   void dispose() {
+    _assureInitialized();
+
     _instance = null;
   }
 
@@ -129,6 +131,8 @@ class TheLogger {
 
   /// Increment session id
   Future<void> startSession() async {
+    _assureInitialized();
+
     final logStrings = <String>[];
     for (final logger in _loggers) {
       final logString = await logger.sessionStart();
@@ -151,24 +155,42 @@ class TheLogger {
   }
 
   /// Get all logs as strings (for debug purposes only)
-  Future<String> getAllLogsAsString() async => _dbLogger.getAllLogsAsString();
+  Future<String> getAllLogsAsString() async {
+    _assureInitialized();
+
+    return _dbLogger.getAllLogsAsString();
+  }
 
   /// Get all logs as [LogRecord]s (for debug purposes only)
   @visibleForTesting
-  Future<List<LogRecord>> getAllLogs() async => _dbLogger.getAllLogs();
+  Future<List<LogRecord>> getAllLogs() async {
+    _assureInitialized();
+
+    return _dbLogger.getAllLogs();
+  }
 
   /// Get all logs as maps (for debug purposes only)
   @visibleForTesting
-  Future<List<Map<String, Object?>>> getAllLogsAsMaps() async =>
-      _dbLogger.getAllLogsAsMaps();
+  Future<List<Map<String, Object?>>> getAllLogsAsMaps() async {
+    _assureInitialized();
+
+    return _dbLogger.getAllLogsAsMaps();
+  }
 
   /// Write logs to archived JSON, return file path
-  Future<String> writeAllLogsToJson([String filename = 'logs.json']) async =>
-      _dbLogger.writeAllLogsToJson(filename);
+  Future<String> writeAllLogsToJson([String filename = 'logs.json']) async {
+    _assureInitialized();
+
+    return _dbLogger.writeAllLogsToJson(filename);
+  }
 
   /// Clear logs (for debug purposes only)
   @visibleForTesting
-  Future<void> clearAllLogs() => _dbLogger.clearAllLogs();
+  Future<void> clearAllLogs() {
+    _assureInitialized();
+
+    return _dbLogger.clearAllLogs();
+  }
 
   DbLogger get _dbLogger {
     final dbLogger =
@@ -182,4 +204,10 @@ class TheLogger {
 
   /// Default retain strategy
   Map<Level, int> _defaultRetainStrategy() => {Level.ALL: 10};
+
+  void _assureInitialized() {
+    if (!_initialized) {
+      throw Exception('Logger is not initialized!');
+    }
+  }
 }
