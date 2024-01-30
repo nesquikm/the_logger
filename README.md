@@ -1,39 +1,54 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# TheLogger
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A modular logging library for Flutter.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- Console logging
+- Database logging
+- Custom logging
+- Sessions
+- Exports logs to compressed file
+- Flexible logs filtering and retaining strategies
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+To use this package, add `the_logger` as a [dependency in your pubspec.yaml file](https://flutter.dev/docs/development/packages-and-plugins/using-packages).
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+Import the package:
 
 ```dart
-const like = 'sample';
+import 'package:the_logger/the_logger.dart';
 ```
 
-## Additional information
+Get an instance of the logger and initialize it:
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```dart
+TheLogger.i().init();
+```
+
+TheLogger is a singleton, so you can get the same instance anywhere in your app:
+
+```dart
+instance = TheLogger.i();
+```
+
+You can start a new logging session by calling:
+
+```dart
+TheLogger.i().startSession();
+```
+
+It is convininet method to sepatare logs by sessions. By default, TheLogger starts a new session every time you call `init()` method (but you can change this behavior by passing `startNewSession: false` to `init()` method). `startSession()` can be called multiple times, for example when app resumes from background (see example).
+
+Also you can configure retain strategy, add custom loggers etc. Just check documentation for `init()` method.
+
+## Testing
+
+This package includes several unit tests for its features. To run the tests, use the following command:
+
+```bash
+flutter test
+```

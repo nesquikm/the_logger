@@ -68,6 +68,7 @@ class TheLogger {
   /// [sessionStartExtra] - extra info for session start, will be added to all
   /// session start records
   /// [customLoggers] - custom loggers
+  /// [sessionStartLevel] - session start log level
   Future<void> init({
     Map<Level, int> retainStrategy = const {},
     bool startNewSession = true,
