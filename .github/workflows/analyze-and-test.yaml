@@ -1,0 +1,50 @@
+name: Analyze and test all
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-analyze-and-test
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    # runs the CI everyday at 10AM
+    - cron: "0 10 * * *"
+
+jobs:
+  semantic_pull_request:
+    # Semantic Pull Request https://workflows.vgv.dev/docs/workflows/semantic_pull_request
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
+
+  check_format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/get-flutter
+
+      - name: run dart format check
+        run: dart format --set-exit-if-changed .
+
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/get-flutter
+
+      - name: analyze
+        run: flutter analyze
+
+  tests:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/get-flutter
+
+      - name: run flutter tests
+        run: flutter test
