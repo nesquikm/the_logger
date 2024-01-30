@@ -79,7 +79,7 @@ class TheLogger {
     Level sessionStartLevel = Level.INFO,
   }) async {
     if (_initialized) {
-      _log.warning('Logger is already initialized!');
+      _log.warning('TheLogger is already initialized!');
       return;
     }
 
@@ -114,7 +114,7 @@ class TheLogger {
   }
 
   /// Dispose logger
-  void dispose() {
+  Future<void> dispose() async {
     _assureInitialized();
 
     _instance = null;
@@ -207,7 +207,7 @@ class TheLogger {
 
   void _assureInitialized() {
     if (!_initialized) {
-      throw Exception('Logger is not initialized!');
+      throw Exception('TheLogger is not initialized!');
     }
   }
 }

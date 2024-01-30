@@ -16,8 +16,8 @@ void main() {
   final log = Logger('TestLogger');
 
   tearDown(
-    () => {
-      TheLogger.i().dispose(),
+    () async {
+      await TheLogger.i().dispose();
     },
   );
 

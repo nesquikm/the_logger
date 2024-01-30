@@ -18,14 +18,15 @@ void main() {
   final log = Logger('TestLogger');
 
   tearDown(
-    () => {
-      TheLogger.i().dispose(),
+    () async {
+      await TheLogger.i().dispose();
     },
   );
 
   group('TheLogger can be instantiated', () {
-    test('can be instantiated', () {
-      final logger = TheLogger.i()..init();
+    test('can be instantiated', () async {
+      final logger = TheLogger.i();
+      await logger.init();
       expect(logger, isNotNull);
     });
   });
