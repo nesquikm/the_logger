@@ -1,7 +1,7 @@
 {
   "configurations": [
     {
-      "name": "Logger example",
+      "name": "TheLogger example",
       "type": "dart",
       "request": "launch",
       "cwd": "example",
