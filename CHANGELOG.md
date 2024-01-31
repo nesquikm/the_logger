@@ -1,3 +1,7 @@
+## 0.0.5
+
+* Fix some documentation issues
+
 ## 0.0.4
 
 * Example app version fix

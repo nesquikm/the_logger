@@ -35,7 +35,7 @@ class TheLogger {
   /// * each integer for a level means how many sessions the records with this
   ///   level will be retained
   /// * each next entry will add this number
-  /// * if [retainStrategy] is empty => {Level.ALL: 100}
+  /// * if [retainStrategy] is empty => {Level.ALL: 10}
   /// So, examples:
   ///
   /// {
