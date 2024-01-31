@@ -5,8 +5,7 @@ abstract class AbstractLogger {
   /// Init logger
   Future<void> init(Map<Level, int> retainStrategy) async {}
 
-  /// Start a new session
-  /// It can return string with session id
+  /// Start a new session, it can return string with session id
   Future<String?> sessionStart() async {
     return null;
   }
