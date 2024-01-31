@@ -27,6 +27,7 @@ class TheLogger {
   bool _initialized = false;
 
   /// Init app logger
+  ///
   /// [retainStrategy] processing algorythm:
   /// * sort all records by level (ALL->OFF)
   /// * record with minimum level will be used as global filter
