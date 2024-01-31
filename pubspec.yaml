@@ -1,5 +1,5 @@
 name: the_logger
-description: "A modular logging library for Flutter"
+description: "A modular logging library for Flutter: supports multiple loggers, storage and filters"
 version: 0.0.4
 homepage: https://github.com/nesquikm/the_logger
 
