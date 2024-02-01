@@ -134,8 +134,8 @@ For debugging purposes, you can get all logs from database and clear all logs fr
 ```dart
 final logsAsString = await TheLogger.i().getAllLogsAsString();
 final logsAsList = await TheLogger.i().getAllLogs();
-final logsAsAsMaps = await TheLogger.i().getAllLogsAsMaps();
-final logsAsAsMaps = await TheLogger.i().clearAllLogs();
+final logsAsMaps = await TheLogger.i().getAllLogsAsMaps();
+final logsAsMaps = await TheLogger.i().clearAllLogs();
 ```
 
 ## Testing
