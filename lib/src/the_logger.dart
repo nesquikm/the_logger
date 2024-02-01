@@ -39,7 +39,7 @@ class TheLogger {
   /// So, examples:
   ///
   /// {
-  ///   Level.ALL:      200,  // ALL records with be deleted after 200 sessions
+  ///   Level.ALL:      200,  // ALL records will be deleted after 200 sessions
   ///   Level.INFO:     100,  // records with INFO and higher level retained for 300 sessions
   ///   Level.SEVERE:   50,   // records with SEVERE and higher level retained for 350 sessions
   /// }

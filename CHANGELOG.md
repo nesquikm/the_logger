@@ -1,3 +1,7 @@
+## 0.0.6
+
+* Add additional docs
+
 ## 0.0.5
 
 * Fix some documentation issues
