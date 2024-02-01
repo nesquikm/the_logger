@@ -1,3 +1,7 @@
+## 0.0.9
+
+* Anoher attempt to fix image path in README.md
+
 ## 0.0.8
 
 * Change image for README.md
