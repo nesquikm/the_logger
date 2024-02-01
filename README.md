@@ -6,7 +6,9 @@ A modular logging library for Flutter.
 
 ## Features
 
-- Console logging
+<img src="images/colorful_logging.png" alt="Colorful logging" width="300" align="right" />
+
+- Colorful console logging
 - Database logging
 - Custom logging
 - Sessions
@@ -19,16 +21,24 @@ To use this package, add `the_logger` and `logging` as a [dependency in your pub
 
 ## Usage
 
-Import the package:
+Import the packages:
 
 ```dart
 import 'package:the_logger/the_logger.dart';
+import 'package:logging/logging.dart';
 ```
 
 Get an instance of the logger and initialize it:
 
 ```dart
 await TheLogger.i().init();
+```
+
+And then you can use it by calling [Logger](https://pub.dev/packages/logging) methods:
+
+```dart
+final _log = Logger('MyHomePage');
+_log.finest('some finest log');
 ```
 
 TheLogger is a singleton, so you can get the same instance anywhere in your app:
@@ -109,14 +119,6 @@ TheLogger.i().init(
     anotherLogger,
   ],
 );
-```
-
-To log a message, use [logging](https://pub.dev/packages/logging) package method:
-
-```dart
-final log = Logger('MyClass');
-log.info('This is an info message');
-log.warning('This is a warning message');
 ```
 
 To write all logs to compressed file call `writeAllLogsToJson` method:
