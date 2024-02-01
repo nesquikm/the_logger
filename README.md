@@ -6,7 +6,7 @@ A modular logging library for Flutter.
 
 ## Features
 
-<img src="images/colorful_logging.png" alt="Colorful logging" width="300" align="right" />
+![Colorful logs](images/colorful_logging.png)
 
 - Colorful console logging
 - Database logging
