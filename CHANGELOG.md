@@ -1,3 +1,7 @@
+## 0.0.10
+
+* Tiny example app fix
+
 ## 0.0.9
 
 * Anoher attempt to fix image path in README.md

@@ -5,8 +5,8 @@ import 'package:logging/logging.dart';
 import 'package:the_logger/the_logger.dart';
 
 void main() {
-  runApp(const MyApp());
   TheLogger.i().init();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
