@@ -1,3 +1,8 @@
+## 0.0.11
+
+* Add ability to mask sensitive data
+* Add additional colors for console output
+
 ## 0.0.10
 
 * Tiny example app fix
