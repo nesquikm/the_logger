@@ -14,6 +14,7 @@ A modular logging library for Flutter.
 - Sessions
 - Exports logs to compressed file
 - Flexible logs filtering and retaining strategies
+- Ability to mask sensitive data
 
 ## Getting started
 
@@ -136,6 +137,25 @@ final logsAsString = await TheLogger.i().getAllLogsAsString();
 final logsAsList = await TheLogger.i().getAllLogs();
 final logsAsMaps = await TheLogger.i().getAllLogsAsMaps();
 final logsAsMaps = await TheLogger.i().clearAllLogs();
+```
+
+To mask sensitive data in logs, you can provide a list of strings or regular expressions:
+
+```dart
+TheLogger.i().addMaskingString(MaskingString('password'));
+TheLogger.i().addMaskingStrings(
+  {
+    MaskingString(
+      's[ecr]+t',
+      isRegExp: true,
+    ),
+    MaskingString(
+      'seed',
+      caseSensitive: false,
+      maskedString: '######',
+    ),
+  },
+);
 ```
 
 ## Testing
