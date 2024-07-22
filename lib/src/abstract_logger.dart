@@ -1,5 +1,7 @@
 import 'package:logging/logging.dart';
 
+import 'package:the_logger/src/models/models.dart';
+
 /// An abstract logger
 abstract class AbstractLogger {
   /// Init logger
@@ -11,5 +13,5 @@ abstract class AbstractLogger {
   }
 
   /// Write record
-  void write(LogRecord record);
+  void write(MaskedLogRecord record);
 }

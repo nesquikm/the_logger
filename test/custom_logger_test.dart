@@ -12,7 +12,7 @@ import 'package:the_logger/the_logger.dart';
 class CustomLogger extends AbstractLogger {
   CustomLogger(this._writeCallback, this._sessionStartCallback);
 
-  final void Function(LogRecord record)? _writeCallback;
+  final void Function(MaskedLogRecord record)? _writeCallback;
   final void Function()? _sessionStartCallback;
 
   @override
@@ -22,7 +22,7 @@ class CustomLogger extends AbstractLogger {
   }
 
   @override
-  void write(LogRecord record) {
+  void write(MaskedLogRecord record) {
     _writeCallback?.call(record);
   }
 }
@@ -36,7 +36,7 @@ void main() {
     },
   );
 
-  test('TheLogger customlogger tests', () async {
+  test('Customlogger tests', () async {
     final logs = <LogRecord>[];
 
     await TheLogger.i().init(
@@ -95,7 +95,7 @@ void main() {
     expect(logs[8].level, Level.SHOUT);
   });
 
-  test('TheLogger customlogger tests', () async {
+  test('Customlogger session test', () async {
     final logs = <LogRecord>[];
     var sessionCount = 0;
 
@@ -116,5 +116,20 @@ void main() {
     expect(logs[0].message, contains('Session start'));
     expect(logs[0].message, contains('custom session started'));
     expect(logs[0].loggerName, contains('TheLogger'));
+  });
+
+  test('Customlogger not mask test', () async {
+    final logs = <MaskedLogRecord>[];
+
+    await TheLogger.i().init(
+      startNewSession: false,
+      dbLogger: false,
+      customLoggers: [CustomLogger(logs.add, () {})],
+    );
+    TheLogger.i().addMaskingString(MaskingString('password'));
+
+    log.finest('message with password');
+    expect(logs[0].message, contains('message with password'));
+    expect(logs[0].maskedMessage, contains('message with ***'));
   });
 }

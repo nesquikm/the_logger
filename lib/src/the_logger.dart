@@ -4,8 +4,11 @@ import 'package:logging/logging.dart';
 import 'package:the_logger/src/abstract_logger.dart';
 import 'package:the_logger/src/console_logger.dart';
 import 'package:the_logger/src/db_logger.dart';
+import 'package:the_logger/src/models/models.dart';
 
 export 'abstract_logger.dart';
+export 'models/masked_log_record.dart';
+export 'models/masking_string.dart';
 
 /// The Logger: modularity, extensibility, testability
 class TheLogger {
@@ -23,6 +26,8 @@ class TheLogger {
   Level _minLevel = Level.ALL;
   String? _sessionStartExtra;
   late Level _sessionStartLevel;
+
+  final MaskingStrings _maskingStrings = {};
 
   bool _initialized = false;
 
@@ -65,6 +70,7 @@ class TheLogger {
   /// [startNewSession] - if true, new session will be started
   /// [consoleLogger] - if true, console logger will be used
   /// [dbLogger] - if true, db logger will be used
+  /// [maskDbLogger] - mask sensitive data in db logger
   /// [consoleLoggerCallback] - callback for console logger
   /// [sessionStartExtra] - extra info for session start, will be added to all
   /// session start records
@@ -75,6 +81,7 @@ class TheLogger {
     bool startNewSession = true,
     bool consoleLogger = true,
     bool dbLogger = true,
+    bool maskDbLogger = true,
     ConsoleLoggerCallback? consoleLoggerCallback,
     String? sessionStartExtra,
     List<AbstractLogger>? customLoggers,
@@ -107,6 +114,9 @@ class TheLogger {
 
     for (final logger in _loggers) {
       await logger.init(retainStrategyNotEmpty);
+      if (logger is DbLogger) {
+        logger.shouldMask = maskDbLogger;
+      }
     }
 
     Logger.root.clearListeners();
@@ -126,8 +136,12 @@ class TheLogger {
   Level get minLevel => _minLevel;
 
   void _writeRecord(LogRecord record) {
+    final maskedRecord = MaskedLogRecord.fromLogRecord(
+      record,
+      maskingStrings: _maskingStrings,
+    );
     for (final logger in _loggers) {
-      logger.write(record);
+      logger.write(maskedRecord);
     }
   }
 
@@ -187,11 +201,45 @@ class TheLogger {
   }
 
   /// Clear logs (for debug purposes only)
-  @visibleForTesting
   Future<void> clearAllLogs() {
     _assureInitialized();
 
     return _dbLogger.clearAllLogs();
+  }
+
+  /// Add masking string
+  void addMaskingString(MaskingString maskingString) {
+    _assureInitialized();
+
+    addMaskingStrings({maskingString});
+  }
+
+  /// Add masking strings
+  void addMaskingStrings(MaskingStrings maskingStrings) {
+    _assureInitialized();
+
+    _maskingStrings.addAll(maskingStrings);
+  }
+
+  /// Remove masking string
+  void removeMaskingString(MaskingString maskingString) {
+    _assureInitialized();
+
+    removeMaskingStrings({maskingString});
+  }
+
+  /// Remove masking strings
+  void removeMaskingStrings(MaskingStrings maskingStrings) {
+    _assureInitialized();
+
+    _maskingStrings.removeAll(maskingStrings);
+  }
+
+  /// Clear masking strings
+  void clearMaskingStrings() {
+    _assureInitialized();
+
+    _maskingStrings.clear();
   }
 
   DbLogger get _dbLogger {

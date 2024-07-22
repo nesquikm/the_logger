@@ -13,13 +13,14 @@ class ConsoleLogger extends AbstractLogger {
   final ConsoleLoggerCallback? _loggerCallback;
 
   @override
-  void write(LogRecord record) {
+  void write(MaskedLogRecord record) {
     var trace = record.error?.toString();
     trace = trace != null ? '\n$trace\n' : '';
     final message = _colorMessage(
       '${record.level.name}: ${record.time}: ${record.message}$trace',
       record.level,
     );
+
     developer.log(
       message,
       time: record.time,
@@ -30,6 +31,7 @@ class ConsoleLogger extends AbstractLogger {
       error: record.error,
       stackTrace: record.stackTrace,
     );
+
     _loggerCallback?.call(
       message,
       time: record.time,
