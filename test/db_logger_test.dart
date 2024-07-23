@@ -23,14 +23,6 @@ void main() {
     },
   );
 
-  group('TheLogger can be instantiated', () {
-    test('can be instantiated', () async {
-      final logger = TheLogger.i();
-      await logger.init();
-      expect(logger, isNotNull);
-    });
-  });
-
   group('TheLogger db tests', () {
     test('init and check empty', () async {
       await TheLogger.i().init(

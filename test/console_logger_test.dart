@@ -66,49 +66,49 @@ void main() {
     expect(logs[0]['message'], contains('Session start'));
     expect(logs[0]['name'], contains('TheLogger'));
 
-    expect(logs[1]['message'], contains(ConsoleColor.green.value));
+    expect(logs[1]['message'], contains(ConsoleColor.green0.value));
     expect(logs[1]['message'], contains('some finest log'));
     expect(logs[1]['message'], contains(ConsoleColor.reset.value));
     expect(logs[1]['name'], contains('TestLogger'));
     expect(logs[1]['level'], Level.FINEST.value);
 
-    expect(logs[2]['message'], contains(ConsoleColor.green.value));
+    expect(logs[2]['message'], contains(ConsoleColor.green1.value));
     expect(logs[2]['message'], contains('some finer log'));
     expect(logs[2]['message'], contains(ConsoleColor.reset.value));
     expect(logs[2]['name'], contains('TestLogger'));
     expect(logs[2]['level'], Level.FINER.value);
 
-    expect(logs[3]['message'], contains(ConsoleColor.green.value));
+    expect(logs[3]['message'], contains(ConsoleColor.green2.value));
     expect(logs[3]['message'], contains('some fine log'));
     expect(logs[3]['message'], contains(ConsoleColor.reset.value));
     expect(logs[3]['name'], contains('TestLogger'));
     expect(logs[3]['level'], Level.FINE.value);
 
-    expect(logs[4]['message'], contains(ConsoleColor.blue.value));
+    expect(logs[4]['message'], contains(ConsoleColor.blue0.value));
     expect(logs[4]['message'], contains('some config log'));
     expect(logs[4]['message'], contains(ConsoleColor.reset.value));
     expect(logs[4]['name'], contains('TestLogger'));
     expect(logs[4]['level'], Level.CONFIG.value);
 
-    expect(logs[5]['message'], contains(ConsoleColor.cyan.value));
+    expect(logs[5]['message'], contains(ConsoleColor.blue1.value));
     expect(logs[5]['message'], contains('some info log'));
     expect(logs[5]['message'], contains(ConsoleColor.reset.value));
     expect(logs[5]['name'], contains('TestLogger'));
     expect(logs[5]['level'], Level.INFO.value);
 
-    expect(logs[6]['message'], contains(ConsoleColor.yellow.value));
+    expect(logs[6]['message'], contains(ConsoleColor.yellow0.value));
     expect(logs[6]['message'], contains('some warning log'));
     expect(logs[6]['message'], contains(ConsoleColor.reset.value));
     expect(logs[6]['name'], contains('TestLogger'));
     expect(logs[6]['level'], Level.WARNING.value);
 
-    expect(logs[7]['message'], contains(ConsoleColor.red.value));
+    expect(logs[7]['message'], contains(ConsoleColor.red0.value));
     expect(logs[7]['message'], contains('some severe log'));
     expect(logs[7]['message'], contains(ConsoleColor.reset.value));
     expect(logs[7]['name'], contains('TestLogger'));
     expect(logs[7]['level'], Level.SEVERE.value);
 
-    expect(logs[8]['message'], contains(ConsoleColor.red.value));
+    expect(logs[8]['message'], contains(ConsoleColor.redInverse.value));
     expect(logs[8]['message'], contains('some shout log'));
     expect(logs[8]['message'], contains(ConsoleColor.reset.value));
     expect(logs[8]['name'], contains('TestLogger'));

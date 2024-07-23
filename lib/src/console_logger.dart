@@ -13,13 +13,14 @@ class ConsoleLogger extends AbstractLogger {
   final ConsoleLoggerCallback? _loggerCallback;
 
   @override
-  void write(LogRecord record) {
+  void write(MaskedLogRecord record) {
     var trace = record.error?.toString();
     trace = trace != null ? '\n$trace\n' : '';
     final message = _colorMessage(
       '${record.level.name}: ${record.time}: ${record.message}$trace',
       record.level,
     );
+
     developer.log(
       message,
       time: record.time,
@@ -30,6 +31,7 @@ class ConsoleLogger extends AbstractLogger {
       error: record.error,
       stackTrace: record.stackTrace,
     );
+
     _loggerCallback?.call(
       message,
       time: record.time,
@@ -50,14 +52,14 @@ class ConsoleLogger extends AbstractLogger {
 
   /// The color map
   final Map<Level, ConsoleColor> _colorMap = {
-    Level.FINEST: ConsoleColor.green,
-    Level.FINER: ConsoleColor.green,
-    Level.FINE: ConsoleColor.green,
-    Level.CONFIG: ConsoleColor.blue,
-    Level.INFO: ConsoleColor.cyan,
-    Level.WARNING: ConsoleColor.yellow,
-    Level.SEVERE: ConsoleColor.red,
-    Level.SHOUT: ConsoleColor.red,
+    Level.FINEST: ConsoleColor.green0,
+    Level.FINER: ConsoleColor.green1,
+    Level.FINE: ConsoleColor.green2,
+    Level.CONFIG: ConsoleColor.blue0,
+    Level.INFO: ConsoleColor.blue1,
+    Level.WARNING: ConsoleColor.yellow0,
+    Level.SEVERE: ConsoleColor.red0,
+    Level.SHOUT: ConsoleColor.redInverse,
   };
 }
 

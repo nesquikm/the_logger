@@ -1,6 +1,6 @@
 name: the_logger
 description: "A modular logging library for Flutter: supports multiple loggers, storage and filters"
-version: 0.0.10
+version: 0.0.11
 homepage: https://github.com/nesquikm/the_logger
 
 environment:
@@ -19,12 +19,12 @@ dependencies:
   sqflite: ^2.3.2
 
 dev_dependencies:
-  flutter_lints: ^3.0.1
+  flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
   path_provider_platform_interface: ^2.1.2
   sqflite_common_ffi: ^2.3.2
-  very_good_analysis: ^5.1.0
+  very_good_analysis: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

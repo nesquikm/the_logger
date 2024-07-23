@@ -74,10 +74,16 @@ class DbLogger extends AbstractLogger {
   }
 
   @override
-  void write(LogRecord record) {
+  void write(MaskedLogRecord record) {
     if (!_database.isOpen) return;
 
-    _database.insert('records', record.toMap(sessionId: _sessionId));
+    _database.insert(
+      'records',
+      record.toMap(
+        sessionId: _sessionId,
+        mask: shouldMask,
+      ),
+    );
   }
 
   /// Get all logs as strings
@@ -222,6 +228,9 @@ class DbLogger extends AbstractLogger {
 
     await _database.execute(query);
   }
+
+  /// Whether to mask logs
+  bool shouldMask = true;
 }
 
 class _LevelBound {
