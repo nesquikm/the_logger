@@ -77,13 +77,32 @@ class MyHomePage extends StatelessWidget {
       ..shout('some shout log');
   }
 
+  void emulateError() {
+    try {
+      throw Exception('Some error');
+    } catch (e, s) {
+      _log
+        ..severe('Some severe error', e, s)
+        ..shout('some shout error', e, s);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ElevatedButton(
-          onPressed: printLogs,
-          child: const Text('Press me'),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              onPressed: printLogs,
+              child: const Text('Press me'),
+            ),
+            ElevatedButton(
+              onPressed: emulateError,
+              child: const Text('Emulate error'),
+            ),
+          ],
         ),
       ),
     );

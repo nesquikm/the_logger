@@ -24,8 +24,9 @@ void main() {
   test('TheLogger console tests', () async {
     final logs = <Map<String, dynamic>>[];
 
-    void consoleLoggerCallback(
-      String message, {
+    void consoleLoggerCallback({
+      required String formattedRecord,
+      required String message,
       DateTime? time,
       int? sequenceNumber,
       int level = 0,
@@ -34,9 +35,9 @@ void main() {
       Object? error,
       StackTrace? stackTrace,
     }) {
-      if (!message.contains('hot-reload')) {
+      if (!formattedRecord.contains('hot-reload')) {
         logs.add({
-          'message': message,
+          'formattedRecord': formattedRecord,
           'level': level,
           'name': name,
         });
@@ -63,54 +64,54 @@ void main() {
 
     expect(logs, hasLength(9));
 
-    expect(logs[0]['message'], contains('Session start'));
+    expect(logs[0]['formattedRecord'], contains('Session start'));
     expect(logs[0]['name'], contains('TheLogger'));
 
-    expect(logs[1]['message'], contains(ConsoleColor.green0.value));
-    expect(logs[1]['message'], contains('some finest log'));
-    expect(logs[1]['message'], contains(ConsoleColor.reset.value));
+    expect(logs[1]['formattedRecord'], contains(ConsoleColor.green0.value));
+    expect(logs[1]['formattedRecord'], contains('some finest log'));
+    expect(logs[1]['formattedRecord'], contains(ConsoleColor.reset.value));
     expect(logs[1]['name'], contains('TestLogger'));
     expect(logs[1]['level'], Level.FINEST.value);
 
-    expect(logs[2]['message'], contains(ConsoleColor.green1.value));
-    expect(logs[2]['message'], contains('some finer log'));
-    expect(logs[2]['message'], contains(ConsoleColor.reset.value));
+    expect(logs[2]['formattedRecord'], contains(ConsoleColor.green1.value));
+    expect(logs[2]['formattedRecord'], contains('some finer log'));
+    expect(logs[2]['formattedRecord'], contains(ConsoleColor.reset.value));
     expect(logs[2]['name'], contains('TestLogger'));
     expect(logs[2]['level'], Level.FINER.value);
 
-    expect(logs[3]['message'], contains(ConsoleColor.green2.value));
-    expect(logs[3]['message'], contains('some fine log'));
-    expect(logs[3]['message'], contains(ConsoleColor.reset.value));
+    expect(logs[3]['formattedRecord'], contains(ConsoleColor.green2.value));
+    expect(logs[3]['formattedRecord'], contains('some fine log'));
+    expect(logs[3]['formattedRecord'], contains(ConsoleColor.reset.value));
     expect(logs[3]['name'], contains('TestLogger'));
     expect(logs[3]['level'], Level.FINE.value);
 
-    expect(logs[4]['message'], contains(ConsoleColor.blue0.value));
-    expect(logs[4]['message'], contains('some config log'));
-    expect(logs[4]['message'], contains(ConsoleColor.reset.value));
+    expect(logs[4]['formattedRecord'], contains(ConsoleColor.blue0.value));
+    expect(logs[4]['formattedRecord'], contains('some config log'));
+    expect(logs[4]['formattedRecord'], contains(ConsoleColor.reset.value));
     expect(logs[4]['name'], contains('TestLogger'));
     expect(logs[4]['level'], Level.CONFIG.value);
 
-    expect(logs[5]['message'], contains(ConsoleColor.blue1.value));
-    expect(logs[5]['message'], contains('some info log'));
-    expect(logs[5]['message'], contains(ConsoleColor.reset.value));
+    expect(logs[5]['formattedRecord'], contains(ConsoleColor.blue1.value));
+    expect(logs[5]['formattedRecord'], contains('some info log'));
+    expect(logs[5]['formattedRecord'], contains(ConsoleColor.reset.value));
     expect(logs[5]['name'], contains('TestLogger'));
     expect(logs[5]['level'], Level.INFO.value);
 
-    expect(logs[6]['message'], contains(ConsoleColor.yellow0.value));
-    expect(logs[6]['message'], contains('some warning log'));
-    expect(logs[6]['message'], contains(ConsoleColor.reset.value));
+    expect(logs[6]['formattedRecord'], contains(ConsoleColor.yellow0.value));
+    expect(logs[6]['formattedRecord'], contains('some warning log'));
+    expect(logs[6]['formattedRecord'], contains(ConsoleColor.reset.value));
     expect(logs[6]['name'], contains('TestLogger'));
     expect(logs[6]['level'], Level.WARNING.value);
 
-    expect(logs[7]['message'], contains(ConsoleColor.red0.value));
-    expect(logs[7]['message'], contains('some severe log'));
-    expect(logs[7]['message'], contains(ConsoleColor.reset.value));
+    expect(logs[7]['formattedRecord'], contains(ConsoleColor.red0.value));
+    expect(logs[7]['formattedRecord'], contains('some severe log'));
+    expect(logs[7]['formattedRecord'], contains(ConsoleColor.reset.value));
     expect(logs[7]['name'], contains('TestLogger'));
     expect(logs[7]['level'], Level.SEVERE.value);
 
-    expect(logs[8]['message'], contains(ConsoleColor.redInverse.value));
-    expect(logs[8]['message'], contains('some shout log'));
-    expect(logs[8]['message'], contains(ConsoleColor.reset.value));
+    expect(logs[8]['formattedRecord'], contains(ConsoleColor.red1.value));
+    expect(logs[8]['formattedRecord'], contains('some shout log'));
+    expect(logs[8]['formattedRecord'], contains(ConsoleColor.reset.value));
     expect(logs[8]['name'], contains('TestLogger'));
     expect(logs[8]['level'], Level.SHOUT.value);
   });
@@ -118,8 +119,9 @@ void main() {
   test('TheLogger console startSession extra string test', () async {
     final logs = <Map<String, dynamic>>[];
 
-    void consoleLoggerCallback(
-      String message, {
+    void consoleLoggerCallback({
+      required String formattedRecord,
+      required String message,
       DateTime? time,
       int? sequenceNumber,
       int level = 0,
@@ -128,9 +130,9 @@ void main() {
       Object? error,
       StackTrace? stackTrace,
     }) {
-      if (!message.contains('hot-reload')) {
+      if (!formattedRecord.contains('hot-reload')) {
         logs.add({
-          'message': message,
+          'formattedRecord': formattedRecord,
           'level': level,
           'name': name,
         });
@@ -148,16 +150,17 @@ void main() {
 
     expect(logs, hasLength(1));
 
-    expect(logs[0]['message'], contains('Session start'));
-    expect(logs[0]['message'], contains('extra string'));
+    expect(logs[0]['formattedRecord'], contains('Session start'));
+    expect(logs[0]['formattedRecord'], contains('extra string'));
     expect(logs[0]['name'], contains('TheLogger'));
   });
 
   test('TheLogger console startSession stack trace test', () async {
     final logs = <Map<String, dynamic>>[];
 
-    void consoleLoggerCallback(
-      String message, {
+    void consoleLoggerCallback({
+      required String formattedRecord,
+      required String message,
       DateTime? time,
       int? sequenceNumber,
       int level = 0,
@@ -166,10 +169,10 @@ void main() {
       Object? error,
       StackTrace? stackTrace,
     }) {
-      if (!message.contains('hot-reload')) {
+      if (!formattedRecord.contains('hot-reload')) {
         logs.add(
           {
-            'message': message,
+            'formattedRecord': formattedRecord,
             'level': level,
             'name': name,
             'error': error,
@@ -195,7 +198,7 @@ void main() {
     }
 
     expect(logs, hasLength(2));
-    expect(logs[1]['message'], contains('some exception'));
+    expect(logs[1]['formattedRecord'], contains('some exception'));
     expect(logs[1]['error'], contains('some error'));
     expect(
       logs[1]['stackTrace'].toString(),
