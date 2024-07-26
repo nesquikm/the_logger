@@ -1,3 +1,7 @@
+## 0.0.12
+
+* Change console printer formatting
+
 ## 0.0.11
 
 * Add ability to mask sensitive data
