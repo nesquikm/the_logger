@@ -14,26 +14,20 @@ class ConsoleLogger extends AbstractLogger {
 
   @override
   void write(MaskedLogRecord record) {
-    var trace = record.error?.toString();
-    trace = trace != null ? '\n$trace\n' : '';
-    final message = _colorMessage(
-      '${record.level.name}: ${record.time}: ${record.message}$trace',
-      record.level,
-    );
+    final formatted = _formatRecord(record);
 
     developer.log(
-      message,
+      formatted,
       time: record.time,
       sequenceNumber: record.sequenceNumber,
       level: record.level.value,
       name: record.loggerName,
       zone: record.zone,
-      error: record.error,
-      stackTrace: record.stackTrace,
     );
 
     _loggerCallback?.call(
-      message,
+      formattedRecord: formatted,
+      message: record.message,
       time: record.time,
       sequenceNumber: record.sequenceNumber,
       level: record.level.value,
@@ -41,6 +35,15 @@ class ConsoleLogger extends AbstractLogger {
       zone: record.zone,
       error: record.error,
       stackTrace: record.stackTrace,
+    );
+  }
+
+  String _formatRecord(MaskedLogRecord record) {
+    final error = record.error != null ? '\n${record.error}' : '';
+    final trace = record.stackTrace != null ? '\n${record.stackTrace}' : '';
+    return _colorMessage(
+      '''${record.level.name}: ${record.time.toIso8601String()} ${record.message}$error$trace''',
+      record.level,
     );
   }
 
@@ -59,13 +62,14 @@ class ConsoleLogger extends AbstractLogger {
     Level.INFO: ConsoleColor.blue1,
     Level.WARNING: ConsoleColor.yellow0,
     Level.SEVERE: ConsoleColor.red0,
-    Level.SHOUT: ConsoleColor.redInverse,
+    Level.SHOUT: ConsoleColor.red1,
   };
 }
 
 /// Console logger callback. Mostly for debugging and testing purpose.
-typedef ConsoleLoggerCallback = void Function(
-  String message, {
+typedef ConsoleLoggerCallback = void Function({
+  required String formattedRecord,
+  required String message,
   DateTime? time,
   int? sequenceNumber,
   int level,
