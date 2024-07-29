@@ -38,6 +38,7 @@ dependencies:
   logging: ^1.2.0
   the_logger:
     path: ../
+    version: 0.0.12
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to
