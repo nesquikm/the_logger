@@ -1,3 +1,7 @@
+## 0.0.13
+
+* Add documentation about how to view logs
+
 ## 0.0.12
 
 * Change console printer formatting

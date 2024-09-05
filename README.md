@@ -158,6 +158,10 @@ TheLogger.i().addMaskingStrings(
 );
 ```
 
+## Viewing logs
+
+You can view logs in console while debugging your app. Also you can add sending logs to server by adding custom logger or by using `writeAllLogsToJson` method, which writes all logs to compressed file that you can send by email or 'share' it in any other way. To view exported logs, you can use [TheLoggerViewer](https://nesquikm.github.io/the_logger_viewer).
+
 ## Testing
 
 This package includes several unit tests for its features. To run the tests, use the following command:
