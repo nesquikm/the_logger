@@ -83,7 +83,7 @@ TheLogger.i().init(
 );
 ```
 
-To enable or disable console logging and whethe to store logs in database, use:
+To enable or disable console logging and whether to store logs in database, use:
 
 ```dart
 TheLogger.i().init(
