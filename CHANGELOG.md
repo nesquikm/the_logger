@@ -1,3 +1,7 @@
+## 0.0.14
+
+* Use gzip instead of archive:bz2
+
 ## 0.0.13
 
 * Add documentation about how to view logs
