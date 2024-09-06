@@ -1,7 +1,6 @@
 import 'dart:convert';
-import 'dart:io' show Platform;
+import 'dart:io' show File, Platform, gzip;
 
-import 'package:archive/archive_io.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
@@ -255,11 +254,7 @@ void main() {
 
       final archive = await TheLogger.i().writeAllLogsToJson();
 
-      final input = InputFileStream(archive);
-      final jsonContent =
-          json.decode(utf8.decode(BZip2Decoder().decodeBuffer(input)))
-              as Map<String, dynamic>;
-      final logs = jsonContent['logs'] as List<dynamic>;
+      final logs = readJsonFile(archive);
 
       var index = 0;
       var prevSessionId = -1;
@@ -365,17 +360,26 @@ void main() {
       final archive =
           await TheLogger.i().writeAllLogsToJson('custom_file_name');
 
-      final input = InputFileStream(archive);
-      final jsonContent =
-          json.decode(utf8.decode(BZip2Decoder().decodeBuffer(input)))
-              as Map<String, dynamic>;
-      final logs = jsonContent['logs'] as List<dynamic>;
+      final logs = readJsonFile(archive);
 
       expect(logs, hasLength(8));
 
-      expect(archive, endsWith('custom_file_name.bz2'));
+      expect(archive, endsWith('custom_file_name.gzip'));
     });
   });
+}
+
+List<dynamic> readJsonFile(String path) {
+  final file = File(path);
+  final randomAccessFile = file.openSync();
+  final l = randomAccessFile.lengthSync();
+  final bytes = randomAccessFile.readSync(l);
+  randomAccessFile.closeSync();
+  final decoded = gzip.decode(bytes);
+
+  final jsonContent = json.decode(utf8.decode(decoded)) as Map<String, dynamic>;
+
+  return jsonContent['logs'] as List<dynamic>;
 }
 
 class FakePathProviderPlatform extends Fake
