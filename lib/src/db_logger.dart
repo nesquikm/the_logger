@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data' as td;
 
-import 'package:archive/archive_io.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
@@ -250,51 +248,40 @@ class _LevelBound {
       );
 }
 
-const _binaryChunkSize = 1024 * 512;
-
 class _FileAcrhive {
   _FileAcrhive();
 
-  OutputFileStream? _outputFileStream;
-  final encoder = BZip2Encoder();
-  final bytesBuilder = td.BytesBuilder();
+  IOSink? _file;
+  final _encoder = gzip.encoder;
+  Sink<List<int>>? _sink;
 
   Future<String> open(String filename) async {
     await close();
 
     final filePath = join(
       (await getTemporaryDirectory()).path,
-      '$filename.bz2',
+      '$filename.gzip',
     );
 
     try {
       await File(filePath).delete();
     } catch (_) {}
 
-    _outputFileStream = OutputFileStream(filePath);
+    _file = File(filePath).openWrite();
+
+    _sink = _encoder.startChunkedConversion(_file!);
 
     return filePath;
   }
 
   Future<void> close() async {
-    _checkAndWriteBuffer(force: true);
-    await _outputFileStream?.close();
-    _outputFileStream = null;
+    _sink?.close();
+    await _file?.flush();
+    // TODO(nesquikm): idk, but tests fails when this is awaited
+    unawaited(_file?.close());
   }
 
   Future<void> writeString(String string) async {
-    bytesBuilder.add(utf8.encode(string));
-    _checkAndWriteBuffer();
-  }
-
-  void _checkAndWriteBuffer({bool force = false}) {
-    if ((force && bytesBuilder.isNotEmpty) ||
-        bytesBuilder.length > _binaryChunkSize) {
-      _outputFileStream?.writeBytes(
-        encoder.encode(
-          bytesBuilder.takeBytes(),
-        ),
-      );
-    }
+    _sink!.add(utf8.encode(string));
   }
 }
