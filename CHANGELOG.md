@@ -1,3 +1,7 @@
+## 0.0.15
+
+* Add custom color scheme for console logging
+
 ## 0.0.14
 
 * Use gzip instead of archive:bz2
