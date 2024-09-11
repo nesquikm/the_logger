@@ -8,9 +8,16 @@ import 'package:the_logger/src/models/models.dart';
 /// Console logger
 class ConsoleLogger extends AbstractLogger {
   /// Create console logger
-  ConsoleLogger(this._loggerCallback);
+  ConsoleLogger({
+    this.loggerCallback,
+    this.colors = const ConsoleColors(),
+  });
 
-  final ConsoleLoggerCallback? _loggerCallback;
+  /// Console logger callback
+  final ConsoleLoggerCallback? loggerCallback;
+
+  /// Console colors
+  final ConsoleColors colors;
 
   @override
   void write(MaskedLogRecord record) {
@@ -25,7 +32,7 @@ class ConsoleLogger extends AbstractLogger {
       zone: record.zone,
     );
 
-    _loggerCallback?.call(
+    loggerCallback?.call(
       formattedRecord: formatted,
       message: record.message,
       time: record.time,
@@ -48,22 +55,27 @@ class ConsoleLogger extends AbstractLogger {
   }
 
   String _colorMessage(String message, Level level) {
-    final colorString = _colorMap[level]?.value ?? '';
+    final colorString = _getLevelColor(level);
+    final resetColor = _getResetColor();
 
-    return '$colorString$message${ConsoleColor.reset.value}';
+    return '$colorString$message$resetColor';
   }
 
-  /// The color map
-  final Map<Level, ConsoleColor> _colorMap = {
-    Level.FINEST: ConsoleColor.green0,
-    Level.FINER: ConsoleColor.green1,
-    Level.FINE: ConsoleColor.green2,
-    Level.CONFIG: ConsoleColor.blue0,
-    Level.INFO: ConsoleColor.blue1,
-    Level.WARNING: ConsoleColor.yellow0,
-    Level.SEVERE: ConsoleColor.red0,
-    Level.SHOUT: ConsoleColor.red1,
-  };
+  String _getLevelColor(Level level) {
+    return switch (level) {
+      Level.FINEST => colors.finest,
+      Level.FINER => colors.finer,
+      Level.FINE => colors.fine,
+      Level.CONFIG => colors.config,
+      Level.INFO => colors.info,
+      Level.WARNING => colors.warning,
+      Level.SEVERE => colors.severe,
+      Level.SHOUT => colors.shout,
+      _ => '',
+    };
+  }
+
+  String _getResetColor() => colors.reset;
 }
 
 /// Console logger callback. Mostly for debugging and testing purpose.

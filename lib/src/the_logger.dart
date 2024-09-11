@@ -7,6 +7,7 @@ import 'package:the_logger/src/db_logger.dart';
 import 'package:the_logger/src/models/models.dart';
 
 export 'abstract_logger.dart';
+export 'models/console_colors.dart';
 export 'models/masked_log_record.dart';
 export 'models/masking_string.dart';
 
@@ -72,6 +73,7 @@ class TheLogger {
   /// [dbLogger] - if true, db logger will be used
   /// [maskDbLogger] - mask sensitive data in db logger
   /// [consoleLoggerCallback] - callback for console logger
+  /// [consoleColors] - console colors
   /// [sessionStartExtra] - extra info for session start, will be added to all
   /// session start records
   /// [customLoggers] - custom loggers
@@ -83,6 +85,7 @@ class TheLogger {
     bool dbLogger = true,
     bool maskDbLogger = true,
     ConsoleLoggerCallback? consoleLoggerCallback,
+    ConsoleColors consoleColors = const ConsoleColors(),
     String? sessionStartExtra,
     List<AbstractLogger>? customLoggers,
     Level sessionStartLevel = Level.INFO,
@@ -107,7 +110,11 @@ class TheLogger {
 
     Logger.root.level = _minLevel;
     _loggers = <AbstractLogger>[
-      if (consoleLogger) ConsoleLogger(consoleLoggerCallback),
+      if (consoleLogger)
+        ConsoleLogger(
+          loggerCallback: consoleLoggerCallback,
+          colors: consoleColors,
+        ),
       if (dbLogger) DbLogger(),
       ...customLoggers ?? [],
     ];

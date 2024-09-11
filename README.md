@@ -111,6 +111,8 @@ TheLogger.i().init(
 );
 ```
 
+You can define custom color scheme for console logging by extending `ConsoleColors` class and providing it's instance to `init()` method as `consoleColors` parameter.
+
 You can add custom loggers (for example for sending logs to server):
 
 ```dart
