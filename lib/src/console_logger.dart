@@ -11,6 +11,7 @@ class ConsoleLogger extends AbstractLogger {
   ConsoleLogger({
     this.loggerCallback,
     this.colors = const ConsoleColors(),
+    this.formatJson = true,
   });
 
   /// Console logger callback
@@ -18,6 +19,9 @@ class ConsoleLogger extends AbstractLogger {
 
   /// Console colors
   final ConsoleColors colors;
+
+  /// Format JSON embedded in message and error
+  final bool formatJson;
 
   @override
   void write(MaskedLogRecord record) {
@@ -46,10 +50,13 @@ class ConsoleLogger extends AbstractLogger {
   }
 
   String _formatRecord(MaskedLogRecord record) {
-    final error = record.error != null ? '\n${record.error}' : '';
+    final message = record.message;
+    final error = (record.error != null ? '\n${record.error}' : '');
+    final formattedMessage = formatJson ? message.prettyJson : message;
+    final formattedError = formatJson ? error.prettyJson : error;
     final trace = record.stackTrace != null ? '\n${record.stackTrace}' : '';
     return _colorMessage(
-      '''${record.level.name}: ${record.time.toIso8601String()} ${record.message}$error$trace''',
+      '''${record.level.name}: ${record.time.toIso8601String()} $formattedMessage$formattedError$trace''',
       record.level,
     );
   }

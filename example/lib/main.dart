@@ -87,6 +87,13 @@ class MyHomePage extends StatelessWidget {
     }
   }
 
+  void logJson() {
+    _log.fine(
+      '''Some JSON right in the message {"messageKey0": "value0","messageKey1": "value1","messageKey2": "value2"} that will be formatted''',
+      '''Error strings can contain JSON too {"errorKey0": "value0","errorKey1": "value1","errorKey2": "value2"} and will be formatted''',
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,6 +108,10 @@ class MyHomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: emulateError,
               child: const Text('Emulate error'),
+            ),
+            ElevatedButton(
+              onPressed: logJson,
+              child: const Text('Log json'),
             ),
           ],
         ),

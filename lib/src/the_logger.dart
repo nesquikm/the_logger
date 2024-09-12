@@ -74,6 +74,7 @@ class TheLogger {
   /// [maskDbLogger] - mask sensitive data in db logger
   /// [consoleLoggerCallback] - callback for console logger
   /// [consoleColors] - console colors
+  /// [consoleFormatJson] - format JSON in console logger
   /// [sessionStartExtra] - extra info for session start, will be added to all
   /// session start records
   /// [customLoggers] - custom loggers
@@ -86,6 +87,7 @@ class TheLogger {
     bool maskDbLogger = true,
     ConsoleLoggerCallback? consoleLoggerCallback,
     ConsoleColors consoleColors = const ConsoleColors(),
+    bool consoleFormatJson = true,
     String? sessionStartExtra,
     List<AbstractLogger>? customLoggers,
     Level sessionStartLevel = Level.INFO,
@@ -114,6 +116,7 @@ class TheLogger {
         ConsoleLogger(
           loggerCallback: consoleLoggerCallback,
           colors: consoleColors,
+          formatJson: consoleFormatJson,
         ),
       if (dbLogger) DbLogger(),
       ...customLoggers ?? [],
