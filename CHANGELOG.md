@@ -1,3 +1,7 @@
+## 0.0.16
+
+* Add JSON pretty print for console logging
+
 ## 0.0.15
 
 * Add custom color scheme for console logging
