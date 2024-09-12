@@ -15,6 +15,8 @@ A modular logging library for Flutter.
 - Exports logs to compressed file
 - Flexible logs filtering and retaining strategies
 - Ability to mask sensitive data
+- Custom color scheme for console logging
+- Parsing and pretty printing JSON strings in logs
 
 ## Getting started
 
@@ -112,6 +114,8 @@ TheLogger.i().init(
 ```
 
 You can define custom color scheme for console logging by extending `ConsoleColors` class and providing it's instance to `init()` method as `consoleColors` parameter.
+
+Console logger tries to parse embedded in `message` and `error` JSON strings and print them in pretty format. You can disable this feature by setting `consoleFormatJson` to `false` in `init()` method.
 
 You can add custom loggers (for example for sending logs to server):
 

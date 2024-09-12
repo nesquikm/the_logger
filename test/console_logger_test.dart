@@ -307,6 +307,115 @@ void main() {
     expect(logs[8]['level'], Level.SHOUT.value);
   });
 
+  test('TheLogger console tests with formatted JSON', () async {
+    final logs = <Map<String, dynamic>>[];
+
+    void consoleLoggerCallback({
+      required String formattedRecord,
+      required String message,
+      DateTime? time,
+      int? sequenceNumber,
+      int level = 0,
+      String name = '',
+      Zone? zone,
+      Object? error,
+      StackTrace? stackTrace,
+    }) {
+      if (!formattedRecord.contains('hot-reload')) {
+        logs.add({
+          'formattedRecord': formattedRecord,
+          'level': level,
+          'name': name,
+        });
+      }
+    }
+
+    await TheLogger.i().init(
+      startNewSession: false,
+      dbLogger: false,
+      consoleLoggerCallback: consoleLoggerCallback,
+    );
+
+    await TheLogger.i().startSession();
+
+    log.finest(
+      '''Message {"messageKey0": "value0","messageKey1": "value1"} formatted''',
+      '''Error {"errorKey0": "value0","errorKey1": "value1"} formatted''',
+    );
+
+    expect(logs, hasLength(2));
+
+    expect(
+      logs[1]['formattedRecord'],
+      contains('{\n'
+          '    "messageKey0": "value0",\n'
+          '    "messageKey1": "value1"\n'
+          '  }\n'),
+    );
+
+    expect(
+      logs[1]['formattedRecord'],
+      contains('{\n'
+          '    "errorKey0": "value0",\n'
+          '    "errorKey1": "value1"\n'
+          '  }\n'),
+    );
+  });
+
+  test('TheLogger console tests with unformatted JSON', () async {
+    final logs = <Map<String, dynamic>>[];
+
+    void consoleLoggerCallback({
+      required String formattedRecord,
+      required String message,
+      DateTime? time,
+      int? sequenceNumber,
+      int level = 0,
+      String name = '',
+      Zone? zone,
+      Object? error,
+      StackTrace? stackTrace,
+    }) {
+      if (!formattedRecord.contains('hot-reload')) {
+        logs.add({
+          'formattedRecord': formattedRecord,
+          'level': level,
+          'name': name,
+        });
+      }
+    }
+
+    await TheLogger.i().init(
+      startNewSession: false,
+      dbLogger: false,
+      consoleLoggerCallback: consoleLoggerCallback,
+      consoleFormatJson: false,
+    );
+
+    await TheLogger.i().startSession();
+
+    log.finest(
+      '''Message {"messageKey0": "value0","messageKey1": "value1"} formatted''',
+      '''Error {"errorKey0": "value0","errorKey1": "value1"} formatted''',
+    );
+
+    expect(logs, hasLength(2));
+
+    expect(
+      logs[1]['formattedRecord'],
+      contains(
+        '''Message {"messageKey0": "value0","messageKey1": "value1"} formatted''',
+      ),
+    );
+
+    expect(
+      logs[1]['formattedRecord'],
+      contains(
+        '''Error {"errorKey0": "value0","errorKey1": "value1"} formatted''',
+      ),
+    );
+  });
+
   test('TheLogger console startSession extra string test', () async {
     final logs = <Map<String, dynamic>>[];
 
