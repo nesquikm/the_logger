@@ -1,3 +1,8 @@
+## 0.0.17
+
+* Add code coverage generation to the CI/CD pipeline
+* Add code coverage badge to README.md
+
 ## 0.0.16
 
 * Add JSON pretty print for console logging
