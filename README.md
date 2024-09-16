@@ -1,6 +1,8 @@
 # TheLogger
 
-[![Analyze and test all](https://github.com/nesquikm/the_logger/actions/workflows/analyze-and-test.yaml/badge.svg)](https://github.com/nesquikm/the_logger/actions/workflows/analyze-and-test.yaml)
+[![Analyze and test all][analyze_and_test_badge]][analyze_and_test_link]
+[![coverage][coverage_badge]][coverage_link]
+[![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
 
 A modular logging library for Flutter.
 
@@ -175,3 +177,10 @@ This package includes several unit tests for its features. To run the tests, use
 ```bash
 flutter test
 ```
+
+[analyze_and_test_badge]: https://github.com/nesquikm/the_logger/actions/workflows/analyze-and-test.yaml/badge.svg
+[analyze_and_test_link]: https://github.com/nesquikm/the_logger/actions/workflows/analyze-and-test.yaml
+[coverage_badge]: https://nesquikm.github.io/the_logger/coverage_badge.svg
+[coverage_link]: https://nesquikm.github.io/the_logger/html
+[very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
+[very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
