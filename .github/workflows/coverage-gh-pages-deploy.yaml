@@ -30,7 +30,7 @@ jobs:
       - name: Setup LCOV
         uses: hrishikesh-kadam/setup-lcov@v1
       - name: Build coverage report
-        run: sh scripts/coverage-gh-pages-deploy.sh
+        run: sh scripts/build-coverage.sh
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
