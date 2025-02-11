@@ -4,7 +4,7 @@ version: 0.0.17
 homepage: https://github.com/nesquikm/the_logger
 
 environment:
-  sdk: '>=3.2.5 <4.0.0'
+  sdk: ^3.6.1
   flutter: ">=1.17.0"
 
 dependencies:
@@ -23,7 +23,7 @@ dev_dependencies:
     sdk: flutter
   path_provider_platform_interface: ^2.1.2
   sqflite_common_ffi: ^2.3.2
-  very_good_analysis: ^6.0.0
+  very_good_analysis: ^7.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

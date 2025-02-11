@@ -265,7 +265,7 @@ class _FileAcrhive {
 
     try {
       await File(filePath).delete();
-    } catch (_) {}
+    } on FileSystemException catch (_) {}
 
     _file = File(filePath).openWrite();
 
