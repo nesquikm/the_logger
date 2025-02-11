@@ -2,7 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:the_logger/the_logger.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   TheLogger.i().init();
@@ -64,6 +66,7 @@ class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
   final _log = Logger('MyHomePage');
+  final _logViewerUrl = 'https://nesquikm.github.io/the_logger_viewer';
 
   void printLogs() {
     _log
@@ -94,6 +97,16 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
+  Future<void> shareLogFile() async {
+    final file = await TheLogger.i().writeAllLogsToJson();
+
+    await Share.shareXFiles([XFile(file)]);
+  }
+
+  Future<void> openLogViewer() async {
+    await launchUrl(Uri.parse(_logViewerUrl));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,6 +125,14 @@ class MyHomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: logJson,
               child: const Text('Log json'),
+            ),
+            ElevatedButton(
+              onPressed: shareLogFile,
+              child: const Text('Share log file'),
+            ),
+            ElevatedButton(
+              onPressed: openLogViewer,
+              child: const Text('Open log viewer'),
             ),
           ],
         ),
