@@ -1,3 +1,4 @@
+// This is an example app, so we don't need public member API docs.
 // ignore_for_file: public_member_api_docs
 
 import 'package:flutter/material.dart';
@@ -83,7 +84,7 @@ class MyHomePage extends StatelessWidget {
   void emulateError() {
     try {
       throw Exception('Some error');
-    } catch (e, s) {
+    } on Exception catch (e, s) {
       _log
         ..severe('Some severe error', e, s)
         ..shout('some shout error', e, s);
