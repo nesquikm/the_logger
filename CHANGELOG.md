@@ -1,3 +1,11 @@
+## 0.0.18
+
+* Update dependencies
+* Update very_good_analysis
+* Fix analyzer issues
+* Add ability to share log file in example app
+* Add ability to open log viewer in example app
+
 ## 0.0.17
 
 * Add code coverage generation to the CI/CD pipeline
