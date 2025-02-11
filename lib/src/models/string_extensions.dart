@@ -51,7 +51,7 @@ extension StringExtensions on String {
   String _tryToFormatJson(String json) {
     try {
       return '''\n  ${_jsonEncoder.convert(jsonDecode(json)).replaceAll('\n', '\n  ')}\n''';
-    } catch (e) {
+    } on Exception catch (_) {
       return json;
     }
   }

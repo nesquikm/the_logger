@@ -1,3 +1,5 @@
+// This file contains internal implementation details for console colors,
+// so public member documentation is not required.
 // ignore_for_file: public_member_api_docs
 
 /// ANSI escape codes

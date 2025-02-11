@@ -143,7 +143,7 @@ void main() {
 
       try {
         throw Exception('some exception');
-      } catch (e, s) {
+      } on Exception catch (e, s) {
         log.severe(e, 'some error', s);
       }
 

@@ -1,8 +1,11 @@
+// This is an example app, so we don't need public member API docs.
 // ignore_for_file: public_member_api_docs
 
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:the_logger/the_logger.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   TheLogger.i().init();
@@ -64,6 +67,7 @@ class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
   final _log = Logger('MyHomePage');
+  final _logViewerUrl = 'https://nesquikm.github.io/the_logger_viewer';
 
   void printLogs() {
     _log
@@ -80,7 +84,7 @@ class MyHomePage extends StatelessWidget {
   void emulateError() {
     try {
       throw Exception('Some error');
-    } catch (e, s) {
+    } on Exception catch (e, s) {
       _log
         ..severe('Some severe error', e, s)
         ..shout('some shout error', e, s);
@@ -92,6 +96,16 @@ class MyHomePage extends StatelessWidget {
       '''Some JSON right in the message {"messageKey0": "value0","messageKey1": "value1","messageKey2": "value2"} that will be formatted''',
       '''Error strings can contain JSON too {"errorKey0": "value0","errorKey1": "value1","errorKey2": "value2"} and will be formatted''',
     );
+  }
+
+  Future<void> shareLogFile() async {
+    final file = await TheLogger.i().writeAllLogsToJson();
+
+    await Share.shareXFiles([XFile(file)]);
+  }
+
+  Future<void> openLogViewer() async {
+    await launchUrl(Uri.parse(_logViewerUrl));
   }
 
   @override
@@ -112,6 +126,14 @@ class MyHomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: logJson,
               child: const Text('Log json'),
+            ),
+            ElevatedButton(
+              onPressed: shareLogFile,
+              child: const Text('Share log file'),
+            ),
+            ElevatedButton(
+              onPressed: openLogViewer,
+              child: const Text('Open log viewer'),
             ),
           ],
         ),
