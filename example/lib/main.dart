@@ -1,6 +1,8 @@
 // This is an example app, so we don't need public member API docs.
 // ignore_for_file: public_member_api_docs
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 import 'package:share_plus/share_plus.dart';
@@ -8,7 +10,7 @@ import 'package:the_logger/the_logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
-  TheLogger.i().init();
+  unawaited(TheLogger.i().init());
   runApp(const MyApp());
 }
 
@@ -40,7 +42,7 @@ class _MyAppState extends State<MyApp> {
   void _onStateChanged(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.resumed:
-        TheLogger.i().startSession();
+        unawaited(TheLogger.i().startSession());
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
       case AppLifecycleState.detached:
@@ -101,7 +103,7 @@ class MyHomePage extends StatelessWidget {
   Future<void> shareLogFile() async {
     final file = await TheLogger.i().writeAllLogsToJson();
 
-    await Share.shareXFiles([XFile(file)]);
+    await SharePlus.instance.share(ShareParams(files: [XFile(file)]));
   }
 
   Future<void> openLogViewer() async {
