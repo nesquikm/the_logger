@@ -86,14 +86,15 @@ class ConsoleLogger extends AbstractLogger {
 }
 
 /// Console logger callback. Mostly for debugging and testing purpose.
-typedef ConsoleLoggerCallback = void Function({
-  required String formattedRecord,
-  required String message,
-  DateTime? time,
-  int? sequenceNumber,
-  int level,
-  String name,
-  Zone? zone,
-  Object? error,
-  StackTrace? stackTrace,
-});
+typedef ConsoleLoggerCallback =
+    void Function({
+      required String formattedRecord,
+      required String message,
+      DateTime? time,
+      int? sequenceNumber,
+      int level,
+      String name,
+      Zone? zone,
+      Object? error,
+      StackTrace? stackTrace,
+    });

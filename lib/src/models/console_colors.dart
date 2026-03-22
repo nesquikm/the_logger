@@ -15,7 +15,8 @@ enum DefaultConsoleColor {
   green2('\x1B[38;5;45m'),
   yellow0('\x1B[38;5;184m'),
   blue0('\x1B[38;5;137m'),
-  blue1('\x1B[38;5;145m');
+  blue1('\x1B[38;5;145m')
+  ;
 
   const DefaultConsoleColor(this.value);
   final String value;

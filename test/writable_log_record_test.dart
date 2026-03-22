@@ -35,8 +35,9 @@ void main() {
         'logger_name': 'logger34',
       };
 
-      final convertedMap = WritableLogRecord.fromMap(originalMap)
-          .toMap(sessionId: 42, mask: false);
+      final convertedMap = WritableLogRecord.fromMap(
+        originalMap,
+      ).toMap(sessionId: 42, mask: false);
 
       expect(convertedMap, {...originalMap, 'time': convertedMap['time']});
     });
