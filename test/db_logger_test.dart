@@ -357,8 +357,9 @@ void main() {
         ..severe('some severe log')
         ..shout('some shout log');
 
-      final archive =
-          await TheLogger.i().writeAllLogsToJson('custom_file_name');
+      final archive = await TheLogger.i().writeAllLogsToJson(
+        'custom_file_name',
+      );
 
       final logs = readJsonFile(archive);
 

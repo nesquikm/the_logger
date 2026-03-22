@@ -50,17 +50,16 @@ class MaskedLogRecord extends LogRecord {
   factory MaskedLogRecord.fromLogRecord(
     LogRecord record, {
     required MaskingStrings maskingStrings,
-  }) =>
-      MaskedLogRecord.fromLogRecordFields(
-        record.level,
-        record.message,
-        record.loggerName,
-        record.error,
-        record.stackTrace,
-        record.zone,
-        record.object,
-        maskingStrings: maskingStrings,
-      );
+  }) => MaskedLogRecord.fromLogRecordFields(
+    record.level,
+    record.message,
+    record.loggerName,
+    record.error,
+    record.stackTrace,
+    record.zone,
+    record.object,
+    maskingStrings: maskingStrings,
+  );
 
   /// Masked message
   final String maskedMessage;

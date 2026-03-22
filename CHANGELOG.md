@@ -1,3 +1,8 @@
+## 0.0.19
+
+* Update SDK constraints and dependencies
+* Fix analyzer issues for very_good_analysis 10.2.0
+
 ## 0.0.18
 
 * Update dependencies

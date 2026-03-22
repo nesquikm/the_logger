@@ -66,7 +66,7 @@ class DbLogger extends AbstractLogger {
       );
     });
 
-    Future.delayed(const Duration(milliseconds: 200), _cleanup);
+    unawaited(Future.delayed(const Duration(milliseconds: 200), _cleanup));
 
     return 'new session id: $_sessionId';
   }
@@ -75,11 +75,13 @@ class DbLogger extends AbstractLogger {
   void write(MaskedLogRecord record) {
     if (!_database.isOpen) return;
 
-    _database.insert(
-      'records',
-      record.toMap(
-        sessionId: _sessionId,
-        mask: shouldMask,
+    unawaited(
+      _database.insert(
+        'records',
+        record.toMap(
+          sessionId: _sessionId,
+          mask: shouldMask,
+        ),
       ),
     );
   }
@@ -94,10 +96,7 @@ class DbLogger extends AbstractLogger {
       ''',
     );
 
-    return list.fold(
-      '',
-      (previousValue, element) => '$previousValue\n$element',
-    );
+    return list.map((element) => '$element').join('\n');
   }
 
   /// Get all logs as [LogRecord]s (for debug purposes only)
@@ -211,7 +210,8 @@ class DbLogger extends AbstractLogger {
         ''';
     });
 
-    final query = '''
+    final query =
+        '''
       DELETE FROM records WHERE $where;
     ''';
 
@@ -242,17 +242,17 @@ class _LevelBound {
   final int sessionId;
 
   _LevelBound copyWith({int? sessionId}) => _LevelBound(
-        level: level,
-        nextLevel: nextLevel,
-        sessionId: sessionId ?? this.sessionId,
-      );
+    level: level,
+    nextLevel: nextLevel,
+    sessionId: sessionId ?? this.sessionId,
+  );
 }
 
 class _FileAcrhive {
   _FileAcrhive();
 
   IOSink? _file;
-  final _encoder = gzip.encoder;
+  final ZLibEncoder _encoder = gzip.encoder;
   Sink<List<int>>? _sink;
 
   Future<String> open(String filename) async {

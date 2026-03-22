@@ -347,18 +347,22 @@ void main() {
 
     expect(
       logs[1]['formattedRecord'],
-      contains('{\n'
-          '    "messageKey0": "value0",\n'
-          '    "messageKey1": "value1"\n'
-          '  }\n'),
+      contains(
+        '{\n'
+        '    "messageKey0": "value0",\n'
+        '    "messageKey1": "value1"\n'
+        '  }\n',
+      ),
     );
 
     expect(
       logs[1]['formattedRecord'],
-      contains('{\n'
-          '    "errorKey0": "value0",\n'
-          '    "errorKey1": "value1"\n'
-          '  }\n'),
+      contains(
+        '{\n'
+        '    "errorKey0": "value0",\n'
+        '    "errorKey1": "value1"\n'
+        '  }\n',
+      ),
     );
   });
 

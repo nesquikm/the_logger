@@ -26,6 +26,9 @@ jobs:
 
       - uses: ./.github/actions/get-flutter
 
+      - name: install dependencies
+        run: flutter pub get
+
       - name: run dart format check
         run: dart format --set-exit-if-changed .
 

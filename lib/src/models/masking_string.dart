@@ -10,9 +10,9 @@ class MaskingString {
     this.maskedString = _defaultMaskedString,
     bool isRegExp = false,
   }) : _regExp = RegExp(
-          isRegExp ? from : RegExp.escape(from),
-          caseSensitive: caseSensitive,
-        );
+         isRegExp ? from : RegExp.escape(from),
+         caseSensitive: caseSensitive,
+       );
 
   /// The string to search for in the source string.
   final String from;

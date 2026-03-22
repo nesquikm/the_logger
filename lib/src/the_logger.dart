@@ -103,8 +103,9 @@ class TheLogger {
     _sessionStartLevel = sessionStartLevel;
 
     // If there are no explicit instructions on how to retain logs
-    final retainStrategyNotEmpty =
-        retainStrategy.isEmpty ? _defaultRetainStrategy() : retainStrategy;
+    final retainStrategyNotEmpty = retainStrategy.isEmpty
+        ? _defaultRetainStrategy()
+        : retainStrategy;
 
     _minLevel = retainStrategyNotEmpty.keys.reduce(
       (value, element) => element.compareTo(value) < 0 ? element : value,
@@ -169,11 +170,12 @@ class TheLogger {
 
     final logStringsReduced = logStrings.fold(
       '',
-      (value, element) => value = '$value$element',
+      (previousValue, element) => '$previousValue$element',
     );
 
-    final extraString =
-        _sessionStartExtra == null ? '' : ' $_sessionStartExtra';
+    final extraString = _sessionStartExtra == null
+        ? ''
+        : ' $_sessionStartExtra';
     _log.log(
       _sessionStartLevel,
       'Session start $logStringsReduced$extraString',
