@@ -14,4 +14,7 @@ abstract class AbstractLogger {
 
   /// Write record
   void write(MaskedLogRecord record);
+
+  /// Dispose logger
+  Future<void> dispose() async {}
 }
