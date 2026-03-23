@@ -1,3 +1,8 @@
+## 0.0.20
+
+* Add real-time log streaming via broadcast stream
+* Add proper logger disposal (fixes flaky tests from database locking)
+
 ## 0.0.19
 
 * Update SDK constraints and dependencies

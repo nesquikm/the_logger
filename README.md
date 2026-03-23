@@ -19,6 +19,7 @@ A modular logging library for Flutter.
 - Ability to mask sensitive data
 - Custom color scheme for console logging
 - Parsing and pretty printing JSON strings in logs
+- Real-time log streaming
 
 ## Getting started
 
@@ -165,6 +166,32 @@ TheLogger.i().addMaskingStrings(
   },
 );
 ```
+
+## Real-time log streaming
+
+TheLogger exposes a broadcast stream that lets you monitor logs in real-time. This is useful for in-app log viewers, diagnostics screens, or any feature that needs to react to logs as they happen:
+
+```dart
+TheLogger.i().stream.listen((record) {
+  print('${record.level}: ${record.maskedMessage}');
+});
+```
+
+The stream supports multiple concurrent listeners and standard `Stream` operators for filtering:
+
+```dart
+// Only warnings and above
+TheLogger.i().stream
+    .where((r) => r.level >= Level.WARNING)
+    .listen((record) => showAlert(record.maskedMessage));
+
+// Only from a specific logger
+TheLogger.i().stream
+    .where((r) => r.loggerName == 'NetworkService')
+    .listen((record) => updateNetworkLog(record));
+```
+
+Each record is a `MaskedLogRecord`, which contains both original and masked versions of the message, error, and stack trace.
 
 ## Viewing logs
 

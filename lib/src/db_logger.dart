@@ -15,6 +15,7 @@ class DbLogger extends AbstractLogger {
   late final Database _database;
   late final Map<Level, int> _retainStrategy;
   int _sessionId = -1;
+  final List<Future<void>> _pendingOperations = [];
 
   @override
   Future<void> init(Map<Level, int> retainStrategy) async {
@@ -66,7 +67,16 @@ class DbLogger extends AbstractLogger {
       );
     });
 
-    unawaited(Future.delayed(const Duration(milliseconds: 200), _cleanup));
+    final cleanupFuture = Future.delayed(
+      const Duration(milliseconds: 200),
+      _cleanup,
+    );
+    _pendingOperations.add(cleanupFuture);
+    unawaited(
+      cleanupFuture.whenComplete(
+        () => _pendingOperations.remove(cleanupFuture),
+      ),
+    );
 
     return 'new session id: $_sessionId';
   }
@@ -215,7 +225,7 @@ class DbLogger extends AbstractLogger {
       DELETE FROM records WHERE $where;
     ''';
 
-    unawaited(_database.execute(query));
+    await _database.execute(query);
   }
 
   /// Clear logs (for debug purposes only)
@@ -229,6 +239,15 @@ class DbLogger extends AbstractLogger {
 
   /// Whether to mask logs
   bool shouldMask = true;
+
+  @override
+  Future<void> dispose() async {
+    await Future.wait(_pendingOperations);
+    _pendingOperations.clear();
+    if (_database.isOpen) {
+      await _database.close();
+    }
+  }
 }
 
 class _LevelBound {

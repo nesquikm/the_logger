@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
@@ -31,6 +33,20 @@ class TheLogger {
   final MaskingStrings _maskingStrings = {};
 
   bool _initialized = false;
+
+  final StreamController<MaskedLogRecord> _streamController =
+      StreamController<MaskedLogRecord>.broadcast();
+
+  /// A broadcast stream of masked log records.
+  ///
+  /// Use this to monitor logs in real-time. Supports multiple listeners.
+  /// Can be filtered with standard [Stream.where]:
+  /// ```dart
+  /// TheLogger.i().stream
+  ///     .where((r) => r.level >= Level.WARNING)
+  ///     .listen((record) => print(record.message));
+  /// ```
+  Stream<MaskedLogRecord> get stream => _streamController.stream;
 
   /// Init app logger
   ///
@@ -140,6 +156,11 @@ class TheLogger {
   Future<void> dispose() async {
     _assureInitialized();
 
+    Logger.root.clearListeners();
+    await _streamController.close();
+    for (final logger in _loggers) {
+      await logger.dispose();
+    }
     _instance = null;
   }
 
@@ -153,6 +174,9 @@ class TheLogger {
     );
     for (final logger in _loggers) {
       logger.write(maskedRecord);
+    }
+    if (!_streamController.isClosed) {
+      _streamController.add(maskedRecord);
     }
   }
 
