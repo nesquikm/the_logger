@@ -1,3 +1,7 @@
+## 0.0.21
+
+* Fix archive directory creation for file export
+
 ## 0.0.20
 
 * Add real-time log streaming via broadcast stream
