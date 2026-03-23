@@ -282,11 +282,14 @@ class _FileAcrhive {
       '$filename.gzip',
     );
 
+    final file = File(filePath);
+    await file.parent.create(recursive: true);
+
     try {
-      await File(filePath).delete();
+      await file.delete();
     } on FileSystemException catch (_) {}
 
-    _file = File(filePath).openWrite();
+    _file = file.openWrite();
 
     _sink = _encoder.startChunkedConversion(_file!);
 
