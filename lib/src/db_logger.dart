@@ -51,7 +51,9 @@ class DbLogger extends AbstractLogger {
   @override
   void write(MaskedLogRecord record) {
     unawaited(
-      _database.into(_database.records).insert(
+      _database
+          .into(_database.records)
+          .insert(
             RecordsCompanion.insert(
               sessionId: Value(_sessionId),
               level: Value(record.level.value),
@@ -60,9 +62,7 @@ class DbLogger extends AbstractLogger {
               ),
               loggerName: Value(record.loggerName),
               error: Value(
-                shouldMask
-                    ? record.maskedError
-                    : record.error?.toString(),
+                shouldMask ? record.maskedError : record.error?.toString(),
               ),
               stackTrace: Value(
                 shouldMask
@@ -77,20 +77,22 @@ class DbLogger extends AbstractLogger {
 
   /// Get all logs as strings
   Future<String> getAllLogsAsString() async {
-    final list = await (_database.select(_database.records)
-          ..orderBy([
-            (t) => OrderingTerm.asc(t.recordTimestamp),
-          ]))
-        .get();
+    final list =
+        await (_database.select(_database.records)..orderBy([
+              (t) => OrderingTerm.asc(t.recordTimestamp),
+            ]))
+            .get();
 
     return list.map((element) => '$element').join('\n');
   }
 
   /// Get all logs as [LogRecord]s (for debug purposes only)
   Future<List<LogRecord>> getAllLogs() async {
-    final list = await _database.customSelect(
-      'SELECT * FROM records ORDER BY record_timestamp ASC',
-    ).get();
+    final list = await _database
+        .customSelect(
+          'SELECT * FROM records ORDER BY record_timestamp ASC',
+        )
+        .get();
 
     return list
         .map((row) => WritableLogRecord.fromMap(row.data.cast()))
@@ -99,9 +101,11 @@ class DbLogger extends AbstractLogger {
 
   /// Get all logs as maps (for debug purposes only)
   Future<List<Map<String, Object?>>> getAllLogsAsMaps() async {
-    final list = await _database.customSelect(
-      'SELECT * FROM records ORDER BY record_timestamp ASC',
-    ).get();
+    final list = await _database
+        .customSelect(
+          'SELECT * FROM records ORDER BY record_timestamp ASC',
+        )
+        .get();
 
     return list.map((row) => row.data.cast<String, Object?>()).toList();
   }
@@ -155,7 +159,8 @@ class DbLogger extends AbstractLogger {
         ''';
     });
 
-    final query = '''
+    final query =
+        '''
       DELETE FROM records WHERE $where;
     ''';
 

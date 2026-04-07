@@ -10,7 +10,7 @@ part 'logger_database.g.dart';
 class LoggerDatabase extends _$LoggerDatabase {
   /// Creates the logger database.
   LoggerDatabase([QueryExecutor? executor])
-      : super(executor ?? _openConnection());
+    : super(executor ?? _openConnection());
 
   @override
   int get schemaVersion => 1;

@@ -6,8 +6,7 @@ class Sessions extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   /// Session start timestamp (text via CURRENT_TIMESTAMP).
-  DateTimeColumn get timestamp =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get timestamp => dateTime().withDefault(currentDateAndTime)();
 }
 
 /// Records table — one row per log entry.

@@ -33,13 +33,15 @@ Future<String> writeLogsToFile(
   var isFirst = true;
 
   while (true) {
-    final rows = await database.customSelect(
-      'SELECT logger_name, id, record_timestamp, session_id, level, '
-      'message, error, stack_trace, time '
-      'FROM records ORDER BY record_timestamp ASC '
-      'LIMIT ? OFFSET ?',
-      variables: [Variable.withInt(batchSize), Variable.withInt(offset)],
-    ).get();
+    final rows = await database
+        .customSelect(
+          'SELECT logger_name, id, record_timestamp, session_id, level, '
+          'message, error, stack_trace, time '
+          'FROM records ORDER BY record_timestamp ASC '
+          'LIMIT ? OFFSET ?',
+          variables: [Variable.withInt(batchSize), Variable.withInt(offset)],
+        )
+        .get();
 
     if (rows.isEmpty) break;
 
