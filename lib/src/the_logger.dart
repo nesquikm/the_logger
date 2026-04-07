@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:the_logger/src/abstract_logger.dart';
 import 'package:the_logger/src/console_logger.dart';
+import 'package:the_logger/src/db/logger_database.dart';
 import 'package:the_logger/src/db_logger.dart';
 import 'package:the_logger/src/models/models.dart';
 
@@ -107,6 +108,7 @@ class TheLogger {
     String? sessionStartExtra,
     List<AbstractLogger>? customLoggers,
     Level sessionStartLevel = Level.INFO,
+    @visibleForTesting LoggerDatabase? database,
   }) async {
     if (_initialized) {
       _log.warning('TheLogger is already initialized!');
@@ -140,9 +142,11 @@ class TheLogger {
     ];
 
     for (final logger in _loggers) {
-      await logger.init(retainStrategyNotEmpty);
       if (logger is DbLogger) {
+        await logger.init(retainStrategyNotEmpty, database);
         logger.shouldMask = maskDbLogger;
+      } else {
+        await logger.init(retainStrategyNotEmpty);
       }
     }
 

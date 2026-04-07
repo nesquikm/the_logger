@@ -1,71 +1,38 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
+import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:the_logger/src/abstract_logger.dart';
+import 'package:the_logger/src/db/logger_database.dart';
+import 'package:the_logger/src/log_export.dart';
 import 'package:the_logger/src/models/models.dart';
 
 /// Database logger
 class DbLogger extends AbstractLogger {
-  late final Database _database;
+  late LoggerDatabase _database;
   late final Map<Level, int> _retainStrategy;
   int _sessionId = -1;
   final List<Future<void>> _pendingOperations = [];
 
   @override
-  Future<void> init(Map<Level, int> retainStrategy) async {
+  Future<void> init(
+    Map<Level, int> retainStrategy, [
+    @visibleForTesting LoggerDatabase? database,
+  ]) async {
     WidgetsFlutterBinding.ensureInitialized();
 
     _retainStrategy = retainStrategy;
 
-    _database = await openDatabase(
-      join(
-        await getDatabasesPath(),
-        'logs.db',
-      ),
-      onCreate: _onCreate,
-      version: 1,
-    );
-  }
-
-  Future<void> _onCreate(Database db, int _) async {
-    await db.execute(
-      '''
-        CREATE TABLE sessions (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
-        );
-      ''',
-    );
-    await db.execute(
-      '''
-        CREATE TABLE records (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          record_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-          session_id INTEGER,
-          level INTEGER,
-          message TEXT,
-          logger_name TEXT,
-          error TEXT,
-          stack_trace TEXT,
-          time TIMESTAMP
-        );
-      ''',
-    );
+    _database = database ?? LoggerDatabase();
   }
 
   @override
   Future<String?> sessionStart() async {
-    await _database.transaction((txn) async {
-      _sessionId = await txn.rawInsert(
-        '''INSERT INTO sessions DEFAULT VALUES;''',
-      );
-    });
+    _sessionId = await _database
+        .into(_database.sessions)
+        .insert(SessionsCompanion.insert());
 
     final cleanupFuture = Future.delayed(
       const Duration(milliseconds: 200),
@@ -83,104 +50,72 @@ class DbLogger extends AbstractLogger {
 
   @override
   void write(MaskedLogRecord record) {
-    if (!_database.isOpen) return;
-
     unawaited(
-      _database.insert(
-        'records',
-        record.toMap(
-          sessionId: _sessionId,
-          mask: shouldMask,
-        ),
-      ),
+      _database.into(_database.records).insert(
+            RecordsCompanion.insert(
+              sessionId: Value(_sessionId),
+              level: Value(record.level.value),
+              message: Value(
+                shouldMask ? record.maskedMessage : record.message,
+              ),
+              loggerName: Value(record.loggerName),
+              error: Value(
+                shouldMask
+                    ? record.maskedError
+                    : record.error?.toString(),
+              ),
+              stackTrace: Value(
+                shouldMask
+                    ? record.maskedStackTrace
+                    : record.stackTrace.toString(),
+              ),
+              time: Value(record.time.microsecondsSinceEpoch),
+            ),
+          ),
     );
   }
 
   /// Get all logs as strings
   Future<String> getAllLogsAsString() async {
-    if (!_database.isOpen) return '';
-
-    final list = await _database.rawQuery(
-      '''
-        SELECT * FROM records ORDER BY record_timestamp ASC
-      ''',
-    );
+    final list = await (_database.select(_database.records)
+          ..orderBy([
+            (t) => OrderingTerm.asc(t.recordTimestamp),
+          ]))
+        .get();
 
     return list.map((element) => '$element').join('\n');
   }
 
   /// Get all logs as [LogRecord]s (for debug purposes only)
   Future<List<LogRecord>> getAllLogs() async {
-    if (!_database.isOpen) return [];
+    final list = await _database.customSelect(
+      'SELECT * FROM records ORDER BY record_timestamp ASC',
+    ).get();
 
-    final list = await _database.rawQuery(
-      '''
-        SELECT * FROM records ORDER BY record_timestamp ASC
-      ''',
-    );
-
-    return list.map(WritableLogRecord.fromMap).toList();
+    return list
+        .map((row) => WritableLogRecord.fromMap(row.data.cast()))
+        .toList();
   }
 
   /// Get all logs as maps (for debug purposes only)
   Future<List<Map<String, Object?>>> getAllLogsAsMaps() async {
-    if (!_database.isOpen) return [];
+    final list = await _database.customSelect(
+      'SELECT * FROM records ORDER BY record_timestamp ASC',
+    ).get();
 
-    return _database.rawQuery(
-      '''
-        SELECT * FROM records ORDER BY record_timestamp ASC
-      ''',
-    );
+    return list.map((row) => row.data.cast<String, Object?>()).toList();
   }
 
   /// Write logs to archived JSON, return file path
   Future<String> writeAllLogsToJson(String filename) async {
-    if (!_database.isOpen) return 'Database is not ready';
-
-    final cursor = await _database.rawQueryCursor(
-      '''
-        SELECT
-          logger_name,
-          id,
-          record_timestamp,
-          session_id,
-          level,
-          message,
-          error,
-          stack_trace,
-          time
-        FROM records ORDER BY record_timestamp ASC
-      ''',
-      [],
-    );
-
-    final fileAcrhive = _FileAcrhive();
-    final filePath = await fileAcrhive.open(filename);
-
-    await fileAcrhive.writeString('{\n  "logs": [\n');
-
-    try {
-      var isFirst = true;
-      while (await cursor.moveNext()) {
-        final row = cursor.current;
-        final string = json.encode(row);
-        final comma = isFirst ? '' : ',\n';
-        await fileAcrhive.writeString('$comma    $string');
-        isFirst = false;
-      }
-    } finally {
-      await cursor.close();
+    if (kIsWeb) {
+      throw UnsupportedError('Log export is not supported on web');
     }
-
-    await fileAcrhive.writeString('\n  ]\n}');
-
-    await fileAcrhive.close();
-
-    return filePath;
+    return writeLogsToFile(_database, filename);
   }
 
   Future<void> _cleanup() async {
-    if (!_database.isOpen || _sessionId < 0 || _retainStrategy.isEmpty) return;
+    if (_sessionId < 0 || _retainStrategy.isEmpty) return;
 
     final levelList = _retainStrategy.entries.toList()
       ..sort((a, b) => b.key.compareTo(a.key));
@@ -220,21 +155,16 @@ class DbLogger extends AbstractLogger {
         ''';
     });
 
-    final query =
-        '''
+    final query = '''
       DELETE FROM records WHERE $where;
     ''';
 
-    await _database.execute(query);
+    await _database.customStatement(query);
   }
 
   /// Clear logs (for debug purposes only)
   Future<void> clearAllLogs() async {
-    const query = '''
-      DELETE FROM records;
-    ''';
-
-    await _database.execute(query);
+    await _database.delete(_database.records).go();
   }
 
   /// Whether to mask logs
@@ -244,9 +174,7 @@ class DbLogger extends AbstractLogger {
   Future<void> dispose() async {
     await Future.wait(_pendingOperations);
     _pendingOperations.clear();
-    if (_database.isOpen) {
-      await _database.close();
-    }
+    await _database.close();
   }
 }
 
@@ -265,45 +193,4 @@ class _LevelBound {
     nextLevel: nextLevel,
     sessionId: sessionId ?? this.sessionId,
   );
-}
-
-class _FileAcrhive {
-  _FileAcrhive();
-
-  IOSink? _file;
-  final ZLibEncoder _encoder = gzip.encoder;
-  Sink<List<int>>? _sink;
-
-  Future<String> open(String filename) async {
-    await close();
-
-    final filePath = join(
-      (await getTemporaryDirectory()).path,
-      '$filename.gzip',
-    );
-
-    final file = File(filePath);
-    await file.parent.create(recursive: true);
-
-    try {
-      await file.delete();
-    } on FileSystemException catch (_) {}
-
-    _file = file.openWrite();
-
-    _sink = _encoder.startChunkedConversion(_file!);
-
-    return filePath;
-  }
-
-  Future<void> close() async {
-    _sink?.close();
-    await _file?.flush();
-    // TODO(nesquikm): idk, but tests fails when this is awaited
-    unawaited(_file?.close());
-  }
-
-  Future<void> writeString(String string) async {
-    _sink!.add(utf8.encode(string));
-  }
 }

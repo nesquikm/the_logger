@@ -101,9 +101,14 @@ class MyHomePage extends StatelessWidget {
   }
 
   Future<void> shareLogFile() async {
-    final file = await TheLogger.i().writeAllLogsToJson();
-
-    await SharePlus.instance.share(ShareParams(files: [XFile(file)]));
+    try {
+      final file = await TheLogger.i().writeAllLogsToJson();
+      _log.info('Share: file written to $file');
+      await SharePlus.instance.share(ShareParams(files: [XFile(file)]));
+      _log.info('Share: completed');
+    } on Exception catch (e, s) {
+      _log.severe('Share failed', e, s);
+    }
   }
 
   Future<void> openLogViewer() async {
