@@ -1,14 +1,20 @@
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logging/logging.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:the_logger/src/db/logger_database.dart';
 import 'package:the_logger/the_logger.dart';
 
-void main() {
-  // Initialize ffi implementation
-  sqfliteFfiInit();
-  // Set global factory, do not use isolate here
-  databaseFactory = databaseFactoryFfiNoIsolate;
+LoggerDatabase _createTestDatabase() {
+  return LoggerDatabase(
+    DatabaseConnection(
+      NativeDatabase.memory(),
+      closeStreamsSynchronously: true,
+    ),
+  );
+}
 
+void main() {
   final log = Logger('TestLogger');
 
   tearDown(
@@ -20,7 +26,7 @@ void main() {
   group('TheLogger can be instantiated', () {
     test('can be instantiated', () async {
       final logger = TheLogger.i();
-      await logger.init();
+      await logger.init(database: _createTestDatabase());
       expect(logger, isNotNull);
     });
   });
@@ -31,6 +37,7 @@ void main() {
         retainStrategy: {Level.ALL: 100},
         startNewSession: false,
         sessionStartExtra: 'extra string',
+        database: _createTestDatabase(),
       );
       await TheLogger.i().clearAllLogs();
 
@@ -51,6 +58,7 @@ void main() {
         startNewSession: false,
         maskDbLogger: false,
         sessionStartExtra: 'extra string',
+        database: _createTestDatabase(),
       );
       await TheLogger.i().clearAllLogs();
 
@@ -70,6 +78,7 @@ void main() {
         retainStrategy: {Level.ALL: 100},
         startNewSession: false,
         sessionStartExtra: 'extra string',
+        database: _createTestDatabase(),
       );
       await TheLogger.i().clearAllLogs();
 

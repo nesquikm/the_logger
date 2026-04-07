@@ -1,19 +1,25 @@
 import 'dart:convert';
 import 'dart:io' show File, Platform, gzip;
 
+import 'package:drift/drift.dart' hide isNotNull, isNull;
+import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logging/logging.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:the_logger/src/db/logger_database.dart';
 import 'package:the_logger/the_logger.dart';
 
-void main() {
-  // Initialize ffi implementation
-  sqfliteFfiInit();
-  // Set global factory, do not use isolate here
-  databaseFactory = databaseFactoryFfiNoIsolate;
+LoggerDatabase _createTestDatabase() {
+  return LoggerDatabase(
+    DatabaseConnection(
+      NativeDatabase.memory(),
+      closeStreamsSynchronously: true,
+    ),
+  );
+}
 
+void main() {
   final log = Logger('TestLogger');
 
   tearDown(
@@ -26,6 +32,7 @@ void main() {
     test('init and check empty', () async {
       await TheLogger.i().init(
         startNewSession: false,
+        database: _createTestDatabase(),
       );
       await TheLogger.i().clearAllLogs();
       expect(await TheLogger.i().getAllLogsAsString(), isEmpty);
@@ -35,6 +42,7 @@ void main() {
       await TheLogger.i().init(
         retainStrategy: {Level.ALL: 100},
         startNewSession: false,
+        database: _createTestDatabase(),
       );
       await TheLogger.i().clearAllLogs();
 
@@ -113,6 +121,7 @@ void main() {
         retainStrategy: {Level.ALL: 100},
         startNewSession: false,
         sessionStartExtra: 'extra string',
+        database: _createTestDatabase(),
       );
       await TheLogger.i().clearAllLogs();
 
@@ -136,6 +145,7 @@ void main() {
         retainStrategy: {Level.ALL: 100},
         startNewSession: false,
         sessionStartExtra: 'extra string',
+        database: _createTestDatabase(),
       );
       await TheLogger.i().clearAllLogs();
 
@@ -172,6 +182,7 @@ void main() {
           Level.SHOUT: 1,
         },
         startNewSession: false,
+        database: _createTestDatabase(),
       );
       await TheLogger.i().clearAllLogs();
 
@@ -227,6 +238,7 @@ void main() {
       await TheLogger.i().init(
         retainStrategy: {Level.ALL: 100},
         startNewSession: false,
+        database: _createTestDatabase(),
       );
       await TheLogger.i().clearAllLogs();
 
@@ -344,6 +356,7 @@ void main() {
       await TheLogger.i().init(
         retainStrategy: {Level.ALL: 100},
         startNewSession: false,
+        database: _createTestDatabase(),
       );
       await TheLogger.i().clearAllLogs();
 

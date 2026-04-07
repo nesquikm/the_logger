@@ -1,3 +1,11 @@
+## 0.0.22
+
+* Migrate from sqflite to drift for cross-platform SQLite support (iOS, Android, macOS, Windows, Linux, Web)
+* Add web support via drift's WasmDatabase
+* Log export (writeAllLogsToJson) is not supported on web — throws UnsupportedError
+* No public API changes — drift is an internal implementation detail
+* Add web assets (sqlite3.wasm, drift_worker.js) to example app
+
 ## 0.0.21
 
 * Fix archive directory creation for file export
