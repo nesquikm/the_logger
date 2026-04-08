@@ -1,3 +1,8 @@
+## 0.0.23
+
+* Update CI actions (actions/checkout v4→v6, upload-pages-artifact v3→v4)
+* Upgrade transitive dependencies
+
 ## 0.0.22
 
 * Migrate from sqflite to drift for cross-platform SQLite support (iOS, Android, macOS, Windows, Linux, Web)
